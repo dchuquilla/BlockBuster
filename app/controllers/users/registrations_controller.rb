@@ -10,11 +10,11 @@ module Users
     end
 
     def register_success
-      render json: { message: 'Successfuly signed up.' }
+      render json: { message: 'Successfuly signed up.' }, status: :ok
     end
 
     def register_failed
-      render json: { message: 'Sign up failure.' }
+      render json: { message: 'Sign up failure.' }, status: :unprocessable_entity
     end
   end
 end
