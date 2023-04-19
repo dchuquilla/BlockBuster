@@ -1,24 +1,34 @@
-# README
+# BlockBuster
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is an API for managing BlockBuster life.
 
-Things you may want to cover:
+## Get code and install
 
-* Ruby version
+```shell
+git clone git@github.com:dchuquilla/BlockBuster.git
+bundle
+```
 
-* System dependencies
+Load datavase
 
-* Configuration
+```shell
+rails db:create db:migrate db:seeds
+```
 
-* Database creation
+## Secrets
 
-* Database initialization
+Please load secrets as env vars
 
-* How to run the test suite
+```shell
+export JWT_SECRET=your-secret-here
+export PEPPER_KEY=your-secret-here
+export DEVISE_SECRET_KEY=your-secret-here
+export DEVISE_JWT_SECRET_KEY=your-secret-here
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+Also, please set db connection vars
 
-* Deployment instructions
-
-* ...
+```shell
+export PSQL_USER=postgres-username-here
+export PSQL_password=postgres-password-here
+```
