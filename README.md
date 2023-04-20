@@ -22,8 +22,6 @@ Please load secrets as env vars
 ```shell
 export JWT_SECRET=your-secret-here
 export PEPPER_KEY=your-secret-here
-export DEVISE_SECRET_KEY=your-secret-here
-export DEVISE_JWT_SECRET_KEY=your-secret-here
 ```
 
 Also, please set db connection vars
