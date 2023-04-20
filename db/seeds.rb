@@ -17,8 +17,7 @@ cycler = genres.cycle
     gender: cycler.next,
     release_date: Faker::Date.between_except(from: 1.year.ago, to: 1.year.from_now,
                                              excepted: Date.today),
-    added_date: Faker::Date.between_except(from: 1.year.ago, to: 1.year.from_now,
-                                           excepted: Date.today),
+    added_date: Faker::Date.between_except(from: 2.year.ago, to: 1.month.ago, excepted: Date.today),
     daily_rental_price: Faker::Number.decimal(l_digits: 2),
     available: Faker::Boolean.boolean
   )

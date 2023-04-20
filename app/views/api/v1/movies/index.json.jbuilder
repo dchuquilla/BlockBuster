@@ -1,1 +1,3 @@
-json.array! @api_v1_movies, partial: 'api_v1_movie', as: :api_v1_movie
+json.pagination @movies[:pagination]
+json.data @movies[:data]
+json.metadata @movies[:metadata]

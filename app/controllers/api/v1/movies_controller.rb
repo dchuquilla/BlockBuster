@@ -5,7 +5,8 @@ class Api::V1::MoviesController < ApplicationController
   # GET /api/v1/movies
   # GET /api/v1/movies.json
   def index
-    @api_v1_movies = Api::V1::Movie.all
+    @query_helper.update(query: Api::V1::Movie.all, search_fields: ['title'])
+    @movies = @query_helper.results
   end
 
   # GET /api/v1/movies/1

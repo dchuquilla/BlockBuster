@@ -2,115 +2,69 @@
 
 require 'rails_helper'
 
-RSpec.describe '/api/v1/movies', type: :request do
-  # This should return the minimal set of attributes required to create a valid
-  # Api::V1::Movie. As you add validations to Api::V1::Movie, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+RSpec.describe 'movies index', type: :request do
+  let(:user) { FactoryBot.create(:user) }
+  let(:movies) { FactoryBot.create_list(:movie, 100) }
+  let(:jwt_token) do
+    post '/login', params: { user: { email: user.email, password: user.password } }
+    response.header[:Authorization]
   end
 
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
-
-  # This should return the minimal set of values that should be in the headers
-  # in order to pass any filters (e.g. authentication) defined in
-  # Api::V1::MoviesController, or in your router and rack
-  # middleware. Be sure to keep this updated too.
-  let(:valid_headers) do
-    {}
-  end
-
-  describe 'GET /index' do
-    it 'renders a successful response' do
-      Api::V1::Movie.create! valid_attributes
-      get api_v1_movies_url, headers: valid_headers, as: :json
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /show' do
-    it 'renders a successful response' do
-      movie = Api::V1::Movie.create! valid_attributes
-      get api_v1_movie_url(movie), as: :json
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'POST /create' do
-    context 'with valid parameters' do
-      it 'creates a new Api::V1::Movie' do
-        expect do
-          post api_v1_movies_url,
-               params: { api_v1_movie: valid_attributes }, headers: valid_headers, as: :json
-        end.to change(Api::V1::Movie, :count).by(1)
+  describe 'GET /api/v1/movies.json' do
+    context 'without params' do
+      it 'returns a success status code' do
+        get '/api/v1/movies.json', headers: { Authorization: jwt_token }
+        expect(response).to have_http_status(:success)
       end
 
-      it 'renders a JSON response with the new api_v1_movie' do
-        post api_v1_movies_url,
-             params: { api_v1_movie: valid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:created)
-        expect(response.content_type).to match(a_string_including('application/json'))
+      it 'contains the movie title created' do
+        movie = FactoryBot.create(:movie)
+        get '/api/v1/movies.json', headers: { Authorization: jwt_token }
+        json = JSON.parse(response.body).deep_symbolize_keys
+        expect(json[:data].first[:title]).to eq(movie.title)
       end
     end
 
-    context 'with invalid parameters' do
-      it 'does not create a new Api::V1::Movie' do
-        expect do
-          post api_v1_movies_url, params: { api_v1_movie: invalid_attributes }, as: :json
-        end.not_to change(Api::V1::Movie, :count)
+    context 'with params' do
+      it 'paginates by 25 per page' do
+        total_movies = movies.count
+        total_pages = total_movies / 25
+        get '/api/v1/movies.json?page=2&per_page=25', headers: { Authorization: jwt_token }
+        json = JSON.parse(response.body).deep_symbolize_keys
+        expect(json[:pagination][:count]).to eq(total_movies)
+        expect(json[:pagination][:total_pages]).to eq(total_pages)
+        expect(json[:pagination][:previous_page]).to eq(1)
+        expect(json[:pagination][:next_page]).to eq(3)
       end
 
-      it 'renders a JSON response with errors for the new api_v1_movie' do
-        post api_v1_movies_url,
-             params: { api_v1_movie: invalid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including('application/json'))
-      end
-    end
-  end
-
-  describe 'PATCH /update' do
-    context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+      it 'sorts by added_date' do
+        total_movies = movies.count
+        movie = FactoryBot.create(:movie, {added_date: DateTime.now})
+        get '/api/v1/movies.json?sort=added_date:desc', headers: { Authorization: jwt_token }
+        json = JSON.parse(response.body).deep_symbolize_keys
+        expect(json[:pagination][:count]).to eq(total_movies + 1)
+        expect(json[:data].first[:title]).to eq(movie.title)
       end
 
-      it 'updates the requested api_v1_movie' do
-        movie = Api::V1::Movie.create! valid_attributes
-        patch api_v1_movie_url(movie),
-              params: { api_v1_movie: new_attributes }, headers: valid_headers, as: :json
-        movie.reload
-        skip('Add assertions for updated state')
+      it 'filters by rental price' do
+        movie = FactoryBot.create(:movie, {daily_rental_price: 40})
+        FactoryBot.create(:movie, {daily_rental_price: 20})
+        FactoryBot.create(:movie, {daily_rental_price: 65})
+        FactoryBot.create(:movie, {daily_rental_price: 10})
+        FactoryBot.create(:movie, {daily_rental_price: 30})
+        get '/api/v1/movies.json?filter[daily_rental_price][lte]=40&sort=daily_rental_price:desc',
+            headers: { Authorization: jwt_token }
+        json = JSON.parse(response.body).deep_symbolize_keys
+        expect(json[:data].first[:title]).to eq(movie.title)
       end
 
-      it 'renders a JSON response with the api_v1_movie' do
-        movie = Api::V1::Movie.create! valid_attributes
-        patch api_v1_movie_url(movie),
-              params: { api_v1_movie: new_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to match(a_string_including('application/json'))
+      it 'searches by title' do
+        movies
+        FactoryBot.create(:movie, {title: 'The Prestige'})
+        get '/api/v1/movies.json?search_for=Prestige', headers: { Authorization: jwt_token }
+        json = JSON.parse(response.body).deep_symbolize_keys
+        expect(json[:data].size).to be >= 1
       end
-    end
-
-    context 'with invalid parameters' do
-      it 'renders a JSON response with errors for the api_v1_movie' do
-        movie = Api::V1::Movie.create! valid_attributes
-        patch api_v1_movie_url(movie),
-              params: { api_v1_movie: invalid_attributes }, headers: valid_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to match(a_string_including('application/json'))
-      end
-    end
-  end
-
-  describe 'DELETE /destroy' do
-    it 'destroys the requested api_v1_movie' do
-      movie = Api::V1::Movie.create! valid_attributes
-      expect do
-        delete api_v1_movie_url(movie), headers: valid_headers, as: :json
-      end.to change(Api::V1::Movie, :count).by(-1)
     end
   end
 end
