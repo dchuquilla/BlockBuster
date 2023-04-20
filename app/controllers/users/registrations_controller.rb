@@ -22,7 +22,7 @@ module Users
     end
 
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: %i[name])
+      devise_parameter_sanitizer.permit(:sign_up, keys: %i[name is_admin])
     end
 
     def register_failed
