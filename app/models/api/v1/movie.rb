@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
+# Movie entity
 class Api::V1::Movie < ApplicationRecord
-  has_many :rentals
+  self.table_name = 'movies'
+  has_many :rents
   validates :title, presence: true
   validates :description, presence: true
   validates :gender, presence: true

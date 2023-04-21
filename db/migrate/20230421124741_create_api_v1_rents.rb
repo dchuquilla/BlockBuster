@@ -3,7 +3,7 @@
 # Cretate the Rent table into DB
 class CreateApiV1Rents < ActiveRecord::Migration[7.0]
   def change
-    create_table :api_v1_rents do |t|
+    create_table :rents do |t|
       t.references :user, null: false, foreign_key: true
       t.references :movie, null: false, foreign_key: true
       t.date :rent_date, null: false

@@ -39,7 +39,11 @@ RSpec.describe Api::V1::Movie, type: :model do
   end
 
   describe 'associations' do
-    it { is_expected.to have_many(:rentals) }
+    it 'expected to have many :rents' do
+      user = FactoryBot.create(:user)
+      FactoryBot.create_list(:rent, 3, movie: movie, user: user)
+      expect(movie.rents.count).to eq(3)
+    end
   end
 
   describe 'scopes' do
