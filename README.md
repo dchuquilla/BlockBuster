@@ -2,6 +2,27 @@
 
 This is an API for managing BlockBuster life.
 
+## Table of contents
+
+- [BlockBuster](#blockbuster)
+  - [Get the code and install](#get-the-code-and-install)
+  - [Secrets](#secrets)
+  - [Load database](#load-database)
+  - [Sign UP a user](#sign-up-a-user)
+  - [Login](#login)
+  - [Movies endpoints](#movies-endpoints)
+    - [List all movies](#list-all-movies)
+    - [Pagination](#pagination)
+      - [example](#example)
+    - [Sorting](#sorting)
+      - [Example](#example)
+    - [Filtering](#filtering)
+      - [Filtering operators](#filtering-operators)
+      - [Example](#example-1)
+    - [Searching movies](#searching-movies)
+      - [Example](#example-2)
+    - [Update a movie](#update-a-movie)
+
 ## Get the code and install
 
 ```shell
@@ -31,27 +52,67 @@ export PSQL_password=postgres-password-here
 rails db:create db:migrate db:seed
 ```
 
-This command with print the credentials for admin users, please save them into your notes.
+This command with print the credentials for admin and regular users, please save them into your notes.
 
-## Pagination
+## Sign UP a user
+
+To sign up a user use `/signup` endpoint
+With the following payload
+
+```json
+{
+  "user": {
+    "name": "tester",
+    "email": "user999@blockbuster.com",
+    "password": "P4ssW0rD"
+  }
+}
+```
+
+## Login
+
+To login a user use this `POST /login` endpoint with this payload
+
+```json
+{
+  "user": {
+    "email": "user999@blockbuster.com",
+    "password": "P4ssW0rD"
+  }
+}
+```
+
+This will return the access token into its response header under the Authorization key
+
+```
+Bearer eyJhbGc******
+```
+
+**Use this for the rest of the endpoints**
+
+## Movies endpoints
+
+### List all movies
+
+Use the `GET /api/v1/movies.json` endpoint. _no payload needed_
+
+### Pagination
 
 All list endpoints are able to be paginated adding the following parameters to the URL
 
-`
-``ruby
+```ruby
 page=1 # current page
 per_page=1 # number of records per page
 
-````
+```
 
-### example
+#### example
 
 ```cURL
-/a
-pi/v1/movies.json?page=1&per_page=50
-````
+GET /api/v1/movies.json?page=1&per_page=50
+```
 
-## Sorting
+### Sorting
 
 All list endpoints are able to sort adding the following parameters to the URL, s
 ort can be multiple, see the example
@@ -62,28 +123,27 @@ sort=column:direction,column:direction
 # direction => asc/desc
 ```
 
-### Example
+#### Example
 
 ```ruby
 # sort by added_date descending and title ascending
-/api/v1/movies.json?sort=added_date:desc,title:asc
+GET /api/v1/movies.json?sort=added_date:desc,title:asc
 ```
 
-## Filtering
+### Filtering
 
 It is also possible to filter results bay adding this parameters to URL
 
-`
-``ruby
+```ruby
 filter[column][operator_code]=value
 
 # column => column name
 
 # operator_code => see the list for reference
 
-````
+```
 
-### Filtering operators
+#### Filtering operators
 
 | Operator Code | SQL Operator             |
 | ------------- | ------------------------ |
@@ -100,14 +160,14 @@ filter[column][operator_code]=value
 
 Note: For the 'null' operator, _null_ as true and _not null_ as false
 
-### Example
+#### Example
 
 ```ruby
 # filter by rental price less than $20 and available movies only
-/api/v1/movies.json?filter[daily_rental_price][lt]=20&[available][eql]=true
-````
+GET /api/v1/movies.json?filter[daily_rental_price][lt]=20&[available][eql]=true
+```
 
-## Searching movies
+### Searching movies
 
 It is possible to search by movie title adding `search_for` parameter to the URL
 
@@ -115,9 +175,23 @@ It is possible to search by movie title adding `search_for` parameter to the URL
 search_for=value
 ```
 
-### Example
+#### Example
 
 ```ruby
 # look for a movie that its title containes 'Prestige' word
-/api/v1/movies.json?search_for=Prestige
+GET /api/v1/movies.json?search_for=Prestige
+```
+
+### Update a movie
+
+**Only admins are allowed**
+use the the endpoint `PUT /api/v1/movies/${id}.json` with the following payload.
+
+```json
+{
+  "api_v1_movie": {
+    "title": "Title updated",
+    "daily_rental_price": "2"
+  }
+}
 ```

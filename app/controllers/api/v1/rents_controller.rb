@@ -1,5 +1,6 @@
 class Api::V1::RentsController < ApplicationController
-  before_action :set_api_v1_rent, only: %i[ show update destroy ]
+  before_action :authenticate_user!
+  before_action :set_api_v1_rent, only: %i[show update destroy]
 
   # GET /api/v1/rents
   # GET /api/v1/rents.json
@@ -9,8 +10,7 @@ class Api::V1::RentsController < ApplicationController
 
   # GET /api/v1/rents/1
   # GET /api/v1/rents/1.json
-  def show
-  end
+  def show; end
 
   # POST /api/v1/rents
   # POST /api/v1/rents.json
@@ -41,13 +41,15 @@ class Api::V1::RentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_api_v1_rent
-      @api_v1_rent = Api::V1::Rent.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def api_v1_rent_params
-      params.require(:api_v1_rent).permit(:user_id, :movie_id, :rent_date, :return_date, :rent_period, :total_price, :total_fine)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_api_v1_rent
+    @api_v1_rent = Api::V1::Rent.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def api_v1_rent_params
+    params.require(:api_v1_rent).permit(:user_id, :movie_id, :rent_date, :return_date,
+                                        :rent_period, :total_price, :total_fine)
+  end
 end

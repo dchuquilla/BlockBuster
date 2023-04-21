@@ -7,4 +7,12 @@ class ApplicationController < ActionController::API
 
   respond_to :json
   before_action :create_query_helper
+
+  protected
+
+  def validate_admin_usaer
+    Rails.logger.info 'current_user.email'
+    Rails.logger.info current_user.is_admin
+    render json: 'Only admins allowed', status: :unauthorized unless current_user.is_admin
+  end
 end

@@ -1,1 +1,1 @@
-json.partial! 'api_v1_movie', api_v1_movie: @api_v1_movie
+json.partial! 'api_v1_movie', api_v1_movie: @movie

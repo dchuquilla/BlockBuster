@@ -12,8 +12,8 @@ Rails.application.routes.draw do
                      }, skip: [:passwords], defaults: {format: :json}
   namespace :api do
     namespace :v1 do
-      resources :rents
-      resources :movies
+      resources :rents, only: %i[create show]
+      resources :movies, only: %i[update index show]
     end
   end
 end
