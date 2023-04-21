@@ -11,7 +11,9 @@ class Api::V1::TicketsController < ApplicationController
 
   # GET /api/v1/tickets/1
   # GET /api/v1/tickets/1.json
-  def show; end
+  def show
+    @ticket.update({state: @ticket.fine_state})
+  end
 
   # POST /api/v1/tickets
   # POST /api/v1/tickets.json

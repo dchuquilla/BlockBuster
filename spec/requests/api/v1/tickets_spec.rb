@@ -21,7 +21,7 @@ RSpec.describe '/api/v1/tickets', type: :request do
       get "/api/v1/tickets/validate/RENT-#{rent.id.to_s.rjust(6, '0')}.json", as: :json
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(response).to be_successful
-      expect(json[:fine_state]).to eq('In period')
+      expect(json[:state]).to eq('In period')
     end
 
     it 'shows ticket with fine' do
@@ -29,7 +29,7 @@ RSpec.describe '/api/v1/tickets', type: :request do
       get "/api/v1/tickets/validate/RENT-#{rent.id.to_s.rjust(6, '0')}.json", as: :json
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(response).to be_successful
-      expect(json[:fine_state]).to eq('Apply Fine')
+      expect(json[:state]).to eq('Apply Fine')
       expect(json[:total_fine]).to eq(20.to_f.to_s)
     end
   end

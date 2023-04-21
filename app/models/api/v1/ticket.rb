@@ -4,7 +4,7 @@
 class Api::V1::Ticket < ApplicationRecord
   self.table_name = 'tickets'
   FINE_BASE = 5
-  STATES = { new: 'New', apply: 'Apply Fine', ok: 'In period' }
+  STATES = { new: 'New', apply: 'Apply Fine', ok: 'In period', returned: 'Returned' }
 
   belongs_to :rent
   has_one :movie, through: :rent
