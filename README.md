@@ -215,3 +215,24 @@ This has to show the following response payload or no ticket found.
   "total_fine": "125.0"
 }
 ```
+
+### Retrurn a ticket
+
+**Only admins are allowed**
+Use `PATCH /api/v1/tickets/return/${code}.json`endpoint _no payload_
+
+This has to show the following response payload or no ticket found.
+
+```json
+{
+  "id": 50,
+  "rent_id": 50,
+  "code": "RENT-000050",
+  "issue_date": "2023-04-10",
+  "total_price": "15.56",
+  "total_fine": "50.0",
+  "state": "Returned"
+}
+```
+
+Please notice the `state: returned`.
