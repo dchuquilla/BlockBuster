@@ -22,7 +22,7 @@ This is an API for managing BlockBuster life.
     - [Searching movies](#searching-movies)
       - [Example](#example-2)
     - [Update a movie](#update-a-movie)
-    - [Tickets](#tickets)
+  - [Tickets](#tickets)
     - [validate/show a ticket endpoint](#validateshow-a-ticket-endpoint)
     - [Retrurn a ticket](#retrurn-a-ticket)
 
@@ -199,7 +199,7 @@ use the the endpoint `PUT /api/v1/movies/${id}.json` with the following payload.
 }
 ```
 
-### Tickets
+## Tickets
 
 ### validate/show a ticket endpoint
 
