@@ -40,11 +40,12 @@ p 'Movies loaded'
 100.times do |_i|
   rent_date = Faker::Date.between_except(from: 1.month.ago, to: 1.day.ago, excepted: Date.today)
 
-  rent_period = rand(5)
+  rent_period = rand(1..5)
   movie = movies_cycler.next
 
-  Api::V1::Rent.create(user: users_cycler.next, movie: movie, rent_date: rent_date,
-                       rent_period: rent_period)
+  rent = Api::V1::Rent.new(user: users_cycler.next, movie: movie, rent_date: rent_date,
+                           rent_period: rent_period, total_price: rent_period * movie.daily_rental_price)
+  rent.save!
 end
 
 p 'rents loaded'

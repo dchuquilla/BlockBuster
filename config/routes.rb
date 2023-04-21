@@ -12,8 +12,13 @@ Rails.application.routes.draw do
                      }, skip: [:passwords], defaults: {format: :json}
   namespace :api do
     namespace :v1 do
-      resources :rents, only: %i[create show]
       resources :movies, only: %i[update index show]
+      resources :rents, only: %i[create show]
+      resources :tickets, only: [:update] do
+        collection do
+          get 'validate/:code', to: 'tickets#show', as: 'validate'
+        end
+      end
     end
   end
 end
