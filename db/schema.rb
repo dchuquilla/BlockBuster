@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_20_031933) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_21_124741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_v1_rents", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "movie_id", null: false
+    t.date "rent_date", null: false
+    t.date "return_date"
+    t.integer "rent_period", null: false
+    t.decimal "total_price", null: false
+    t.decimal "total_fine"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id"], name: "index_api_v1_rents_on_movie_id"
+    t.index ["user_id"], name: "index_api_v1_rents_on_user_id"
+  end
 
   create_table "movies", force: :cascade do |t|
     t.string "title", null: false
@@ -42,4 +56,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_031933) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "api_v1_rents", "movies"
+  add_foreign_key "api_v1_rents", "users"
 end

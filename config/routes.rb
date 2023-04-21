@@ -12,6 +12,7 @@ Rails.application.routes.draw do
                      }, skip: [:passwords], defaults: {format: :json}
   namespace :api do
     namespace :v1 do
+      resources :rents
       resources :movies
     end
   end
