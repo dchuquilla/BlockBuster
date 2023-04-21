@@ -61,6 +61,7 @@ RSpec.describe '/api/v1/tickets', type: :request do
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(response).to be_successful
       expect(json[:state]).to eq('Returned')
+      expect(json[:total_fine]).to eq(0)
     end
 
     it 'shows ticket with fine' do

@@ -22,6 +22,9 @@ This is an API for managing BlockBuster life.
     - [Searching movies](#searching-movies)
       - [Example](#example-2)
     - [Update a movie](#update-a-movie)
+    - [Tickets](#tickets)
+    - [validate/show a ticket endpoint](#validateshow-a-ticket-endpoint)
+    - [Retrurn a ticket](#retrurn-a-ticket)
 
 ## Get the code and install
 
