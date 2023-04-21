@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Create tickets table
 class CreateApiV1Tickets < ActiveRecord::Migration[7.0]
   def change
     create_table :tickets do |t|

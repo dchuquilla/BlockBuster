@@ -1,53 +1,60 @@
 class Api::V1::TicketsController < ApplicationController
-  before_action :set_api_v1_ticket, only: %i[ show update destroy ]
+  before_action :set_api_v1_ticket, only: %i[update destroy]
+  before_action :set_api_v1_ticket_by_code, only: %i[show]
 
   # GET /api/v1/tickets
   # GET /api/v1/tickets.json
   def index
-    @api_v1_tickets = Api::V1::Ticket.all
+    @tickets = Api::V1::Ticket.all
   end
 
   # GET /api/v1/tickets/1
   # GET /api/v1/tickets/1.json
-  def show
-  end
+  def show; end
 
   # POST /api/v1/tickets
   # POST /api/v1/tickets.json
   def create
-    @api_v1_ticket = Api::V1::Ticket.new(api_v1_ticket_params)
+    @ticket = Api::V1::Ticket.new(api_v1_ticket_params)
 
-    if @api_v1_ticket.save
-      render :show, status: :created, location: @api_v1_ticket
+    if @ticket.save
+      render :show, status: :created, location: @ticket
     else
-      render json: @api_v1_ticket.errors, status: :unprocessable_entity
+      render json: @ticket.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /api/v1/tickets/1
   # PATCH/PUT /api/v1/tickets/1.json
   def update
-    if @api_v1_ticket.update(api_v1_ticket_params)
-      render :show, status: :ok, location: @api_v1_ticket
+    if @ticket.update(api_v1_ticket_params)
+      render :show, status: :ok, location: @ticket
     else
-      render json: @api_v1_ticket.errors, status: :unprocessable_entity
+      render json: @ticket.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /api/v1/tickets/1
   # DELETE /api/v1/tickets/1.json
   def destroy
-    @api_v1_ticket.destroy
+    @ticket.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_api_v1_ticket
-      @api_v1_ticket = Api::V1::Ticket.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def api_v1_ticket_params
-      params.require(:api_v1_ticket).permit(:rent_id, :code, :issue_date, :total_price)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_api_v1_ticket
+    @ticket = Api::V1::Ticket.find(params[:id])
+  end
+
+  def set_api_v1_ticket_by_code
+    render json: 'Code is required', staus: :unprocessable_entity unless params[:code].present?
+    @ticket = Api::V1::Ticket.find_by(code: params[:code])
+    render json: 'Ticket not found', status: :not_found if @ticket.nil?
+  end
+
+  # Only allow a list of trusted parameters through.
+  def api_v1_ticket_params
+    params.require(:api_v1_ticket).permit(:rent_id, :code, :issue_date, :total_price)
+  end
 end
