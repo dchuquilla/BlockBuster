@@ -1,6 +1,7 @@
 class Api::V1::TicketsController < ApplicationController
   before_action :set_api_v1_ticket, only: %i[update destroy]
-  before_action :set_api_v1_ticket_by_code, only: %i[show]
+  before_action :set_api_v1_ticket_by_code, only: %i[show update]
+  before_action :validate_admin_usaer, only: [:update]
 
   # GET /api/v1/tickets
   # GET /api/v1/tickets.json

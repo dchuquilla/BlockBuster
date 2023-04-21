@@ -195,3 +195,23 @@ use the the endpoint `PUT /api/v1/movies/${id}.json` with the following payload.
   }
 }
 ```
+
+### Tickets
+
+### validate/show a ticket endpoint
+
+Use `GET GET /api/v1/tickets/validate/${code}.json` endpoint _no payload_
+
+This has to show the following response payload or no ticket found.
+
+```json
+{
+  "id": 50,
+  "rent_id": 50,
+  "code": "RENT-000050",
+  "issue_date": "2023-03-25",
+  "total_price": "143.16",
+  "fine_state": "Apply Fine",
+  "total_fine": "125.0"
+}
+```

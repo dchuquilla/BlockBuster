@@ -4,6 +4,8 @@
 class Api::V1::Ticket < ApplicationRecord
   self.table_name = 'tickets'
   FINE_BASE = 5
+  STATES = { new: 'New', apply: 'Apply Fine', ok: 'In period' }
+
   belongs_to :rent
   has_one :movie, through: :rent
 
@@ -12,7 +14,7 @@ class Api::V1::Ticket < ApplicationRecord
   validates :total_price, presence: true, numericality: { greater_than: 0 }
 
   def fine_state
-    DateTime.now > (issue_date + rent.rent_period.days) ? 'Apply Fine' : 'In period'
+    DateTime.now > (issue_date + rent.rent_period.days) ? STATES[:apply] : STATES[:ok]
   end
 
   def total_fine
