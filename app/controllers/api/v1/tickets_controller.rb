@@ -1,7 +1,7 @@
 class Api::V1::TicketsController < ApplicationController
   before_action :set_api_v1_ticket, only: %i[update destroy]
-  before_action :set_api_v1_ticket_by_code, only: %i[show update]
-  before_action :validate_admin_usaer, only: [:update]
+  before_action :set_api_v1_ticket_by_code, only: %i[show return]
+  before_action :validate_admin_usaer, only: [:return]
 
   # GET /api/v1/tickets
   # GET /api/v1/tickets.json
@@ -12,7 +12,7 @@ class Api::V1::TicketsController < ApplicationController
   # GET /api/v1/tickets/1
   # GET /api/v1/tickets/1.json
   def show
-    @ticket.update({state: @ticket.fine_state})
+    @ticket.update({state: @ticket.fine_state}) if @ticket.fine_state
   end
 
   # POST /api/v1/tickets
@@ -31,6 +31,16 @@ class Api::V1::TicketsController < ApplicationController
   # PATCH/PUT /api/v1/tickets/1.json
   def update
     if @ticket.update(api_v1_ticket_params)
+      render :show, status: :ok, location: @ticket
+    else
+      render json: @ticket.errors, status: :unprocessable_entity
+    end
+  end
+
+  # PATCH/PUT /api/v1/tickets/return/${code}
+  # PATCH/PUT /api/v1/tickets/return/${code}.json
+  def return
+    if @ticket.update({state: Api::V1::Ticket::STATES[:returned]})
       render :show, status: :ok, location: @ticket
     else
       render json: @ticket.errors, status: :unprocessable_entity

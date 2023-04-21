@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       resources :tickets, only: %i[update show] do
         collection do
           get 'validate/:code', to: 'tickets#show', as: 'validate'
-          put 'return/:code', to: 'tickets#update', as: 'return'
+          patch 'return/:code', to: 'tickets#return', as: 'return'
         end
       end
     end
